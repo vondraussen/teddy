@@ -14,7 +14,7 @@ jobs:
       matrix:
         configuration: [Debug, Release]
 
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     env:
       Solution_Name: Teddy.sln
@@ -25,21 +25,21 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Install .NET Core
+    - name: Setup Mono
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: 6.0.x
 
-    - name: Setup MSBuild.exe
-      uses: microsoft/setup-msbuild@v1
-      with:
-        msbuild-architecture: x64
+    # - name: Setup MSBuild.exe
+    #   uses: microsoft/setup-msbuild@v1
+    #   with:
+    #     msbuild-architecture: x64
 
     - name: Nuget restore
       run: nuget restore $env:Solution_Name
 
     - name: Build the application
-      run: msbuild $env:Solution_Name -t:rebuild -property:Configuration=$env:Configuration
+      run: msbuild $env:Solution_Name -t:rebuild -property:Configuration=$env:Configuration -property:Platform=x64 -property:RuntimeIdentifier=win-x64
       env:
         Configuration: ${{ matrix.configuration }}
 
